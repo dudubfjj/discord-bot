@@ -14,24 +14,6 @@ from selenium.webdriver.chrome.service import Service
 
 import http.client
 import json
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
-
-options = webdriver.ChromeOptions()
-options.headless = True
-options.add_argument(f'user-agent={user_agent}')
-options.add_argument("--window-size=1920,1080")
-options.add_argument('--ignore-certificate-errors')
-options.add_argument('--allow-running-insecure-content')
-options.add_argument("--disable-extensions")
-options.add_argument("--proxy-server='direct://'")
-options.add_argument("--proxy-bypass-list=*")
-options.add_argument("--start-maximized")
-options.add_argument('--disable-gpu')
-options.add_argument('--disable-dev-shm-usage')
-options.add_argument('--no-sandbox')
-servico = Service(ChromeDriverManager().install())
-navegador = webdriver.Chrome(service=servico, options=options)
-
 
 client = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
@@ -82,29 +64,28 @@ async def send_time(ctx):
 #GAMERSCLUB LAST GAME
 @client.command(name='gc', help="Digite o id da GamersClub após o comando. Ex: !gc 322861")
 async def get_url(ctx, id_gc):
-    #options = ChromeOptions()
-    #options.headless = True
+    options = ChromeOptions()
+    options.headless = True
     
     
-    #user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
 
-    #options = webdriver.ChromeOptions()
-    #options.headless = True
-    #options.add_argument(f'user-agent={user_agent}')
-    #options.add_argument("--window-size=1920,1080")
-    #options.add_argument('--ignore-certificate-errors')
-    #options.add_argument('--allow-running-insecure-content')
-    #options.add_argument("--disable-extensions")
-    #options.add_argument("--proxy-server='direct://'")
-    #options.add_argument("--proxy-bypass-list=*")
-    #options.add_argument("--start-maximized")
-    #options.add_argument('--disable-gpu')
-    #options.add_argument('--disable-dev-shm-usage')
-    #options.add_argument('--no-sandbox')
+    options = webdriver.ChromeOptions()
+    options.headless = True
+    options.add_argument(f'user-agent={user_agent}')
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument('--ignore-certificate-errors')
+    options.add_argument('--allow-running-insecure-content')
+    options.add_argument("--disable-extensions")
+    options.add_argument("--proxy-server='direct://'")
+    options.add_argument("--proxy-bypass-list=*")
+    options.add_argument("--start-maximized")
+    options.add_argument('--disable-gpu')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--no-sandbox')
     
-    #servico = Service(ChromeDriverManager().install())
-    #navegador = webdriver.Chrome(service=servico, options=options)
-    sleep(40)
+    servico = Service(ChromeDriverManager().install())
+    navegador = webdriver.Chrome(service=servico, options=options)
     navegador.get(f'https://gamersclub.com.br/player/{id_gc}')
 
     nickname = navegador.find_element(By.CLASS_NAME, 'gc-profile-user-name').text
@@ -189,7 +170,7 @@ async def get_level(ctx, id_gc):
     options.headless = True
     navegador = webdriver.Chrome(options=options)
     navegador.get(f'https://gamersclub.com.br/player/{id_gc}')
-    #sleep(30)
+  
     #PEGANDO NICKNAME
     nickname = navegador.find_element(By.CLASS_NAME, 'gc-profile-user-name').text
 
