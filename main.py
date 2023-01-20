@@ -87,6 +87,7 @@ async def get_url(ctx, id_gc):
     
     servico = Service(ChromeDriverManager().install())
     navegador = webdriver.Chrome(service=servico, options=options)
+    sleep(40)
     navegador.get(f'https://gamersclub.com.br/player/{id_gc}')
 
     nickname = navegador.find_element(By.CLASS_NAME, 'gc-profile-user-name').text
