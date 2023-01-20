@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord.ext.commands.errors import MissingRequiredArgument, CommandNotFound, CommandInvokeError
 from decouple import config
 from time import sleep
+import requests
 
 import datetime
 
@@ -64,56 +65,62 @@ async def send_time(ctx):
 #GAMERSCLUB LAST GAME
 @client.command(name='gc', help="Digite o id da GamersClub após o comando. Ex: !gc 322861")
 async def get_url(ctx, id_gc):
-    options = ChromeOptions()
-    options.headless = True
-    
-    
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+    cookies = {
+    '_gcl_au': '1.1.209042485.1667412074',
+    '_tt_enable_cookie': '1',
+    '_ttp': '07c8a5b2-ddbe-4b57-8db6-68428cd18630',
+    'language': 'pt-br',
+    'sib_cuid': '69ba150b-aa6a-481d-b287-e81cb7879e92',
+    '_hjSessionUser_2263196': 'eyJpZCI6IjM5YzhlYjVjLTcyODctNWNlMy1hZmMzLWFhOWVlNDVmMGY1MSIsImNyZWF0ZWQiOjE2Njc0MTIxNTgyNTIsImV4aXN0aW5nIjp0cnVlfQ==',
+    '_hjMinimizedPolls': '864076',
+    '_hjSessionUser_1963917': 'eyJpZCI6IjU4N2MzMzlkLTJkMWUtNTlmNS1iNzE2LTZmODljMmU1YTZmMyIsImNyZWF0ZWQiOjE2Njc0MTIwNzQ1MjEsImV4aXN0aW5nIjp0cnVlfQ==',
+    '_gid': 'GA1.3.195961545.1673814267',
+    '_hjDonePolls': '864076%2C865658%2C872356%2C873600',
+    'gclubsess': 'dc5fe6cfa591881570c87e2c0cc989ec16fe9f16',
+    '_hjIncludedInSessionSample': '0',
+    '_hjSession_2263196': 'eyJpZCI6ImEzZWNlZjAxLWVjZDEtNDM5Ny1hNjZjLWM4NjQyZjM0MGU5YiIsImNyZWF0ZWQiOjE2NzQyMzM1MDM1NTAsImluU2FtcGxlIjpmYWxzZX0=',
+    '_hjAbsoluteSessionInProgress': '0',
+    '_hjHasCachedUserAttributes': 'true',
+    '__cf_bm': 'FaSi7Qur_bC7Ms8oMjKw3w38XsPQ7lD1aHfcT2g0Jj0-1674233353-0-Af90vhBup0uUKQMqGrOeK2c+x6QBLT/Uo3So7cPdLMGymPvjLdtSpDCLYcAT4wTGjiwfN69KpEVqM40YfXGYijBhTIHWdTBj6JYFTR8sMXiob7FWlI4xHAnoavMGhRuADdbSb+ReLAvsNbyCQdNBXfg=',
+    '_ga': 'GA1.3.159586927.1667412074',
+    'SL_C_23361dd035530_VID': 'LFlRfyq_0v',
+    'SL_C_23361dd035530_KEY': 'a14d3638cda988422792e3613234743b983fdd9e',
+    '_ga_H7ETJY03DT': 'GS1.1.1674233503.232.1.1674234592.60.0.0',
+    '_ga_GDBFGFR1PC': 'GS1.1.1674233503.232.1.1674234592.60.0.0'}
 
-    options = webdriver.ChromeOptions()
-    options.headless = True
-    options.add_argument(f'user-agent={user_agent}')
-    options.add_argument("--window-size=1920,1080")
-    options.add_argument('--ignore-certificate-errors')
-    options.add_argument('--allow-running-insecure-content')
-    options.add_argument("--disable-extensions")
-    options.add_argument("--proxy-server='direct://'")
-    options.add_argument("--proxy-bypass-list=*")
-    options.add_argument("--start-maximized")
-    options.add_argument('--disable-gpu')
-    options.add_argument('--disable-dev-shm-usage')
-    options.add_argument('--no-sandbox')
-    
-    servico = Service(ChromeDriverManager().install())
-    navegador = webdriver.Chrome(service=servico, options=options)
-    navegador.get(f'https://gamersclub.com.br/player/{id_gc}')
+    headers = {
+        'authority': 'gamersclub.com.br',
+        'accept': 'application/json, text/plain, */*',
+        'accept-language': 'en-US,en;q=0.9,pt;q=0.8,fr;q=0.7',
+        'referer': f'https://gamersclub.com.br/player/{id_gc}',
+        'sec-ch-ua': '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-origin',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'}
 
-    nickname = navegador.find_element(By.CLASS_NAME, 'gc-profile-user-name').text
+    response = requests.get(f'https://gamersclub.com.br/api/box/init/{id_gc}', cookies=cookies, headers=headers)
 
-    stats_nome = navegador.find_elements(By.CLASS_NAME, 'StatsBoxPlayerInfoItem__name')
-    stats_dado = navegador.find_elements(By.CLASS_NAME, 'StatsBoxPlayerInfoItem__value')
+    stat = response.json()
 
-    lista_nome = []
-    lista_dado = []
-    dict_stats = {}
 
-    for stat in stats_nome:
-        estatistica = stat.text
-        lista_nome.append(estatistica)
+    estatisticas = stat['stats']
 
-    for stat2 in stats_dado:
-        estatistica2 = stat2.text
-        lista_dado.append(estatistica2)
+    stat = []
+    value = []
+    for itens_of_list in estatisticas:
+        for key_of_dict, value_of_dict in itens_of_list.items():
+            if key_of_dict in 'diff':
+                pass       
+            elif key_of_dict in 'stat':
+                stat.append(value_of_dict)
+            elif key_of_dict in 'value':
+                value.append(value_of_dict)
 
-    for i, j in zip(lista_nome, lista_dado):
-        dict_stats[i] = j
-
-    await ctx.send(f'As stats da última partida do {nickname} são: ')
-
-    for k, v in dict_stats.items():
-        await ctx.send(f'{k} = {v}')
-    
-    navegador.quit()
+    for s, v in zip(stat, value):
+        await ctx.send(f'{s} = {v}')
 
 
 #GAMERSCLUB HISTORICO MENSAL
