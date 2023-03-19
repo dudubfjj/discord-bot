@@ -7,9 +7,6 @@ import requests
 import datetime
 
 
-import http.client
-import json
-
 client = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
 #I'M READY!
@@ -92,55 +89,6 @@ async def get_url(ctx, id_gc):
 
     for s, v in zip(stat, value):
         await ctx.send(f'{s} = {v}')
-
-
-#GAMERSCLUB HISTORICO MENSAL
-@client.command(name='gcmes', help="Digite o id da GamersClub após o comando. Ex: !gcmes 322861")
-async def get_url(ctx, id_gc):
-    conn = http.client.HTTPSConnection("gamersclub.com.br")
-
-    payload = ""
-
-    headers = {
-        'cookie': "_gcl_au=1.1.209042485.1667412074; _tt_enable_cookie=1; _ttp=07c8a5b2-ddbe-4b57-8db6-68428cd18630; language=pt-br; sib_cuid=69ba150b-aa6a-481d-b287-e81cb7879e92; _hjSessionUser_2263196=eyJpZCI6IjM5YzhlYjVjLTcyODctNWNlMy1hZmMzLWFhOWVlNDVmMGY1MSIsImNyZWF0ZWQiOjE2Njc0MTIxNTgyNTIsImV4aXN0aW5nIjp0cnVlfQ==; _hjMinimizedPolls=864076; _hjSessionUser_1963917=eyJpZCI6IjU4N2MzMzlkLTJkMWUtNTlmNS1iNzE2LTZmODljMmU1YTZmMyIsImNyZWF0ZWQiOjE2Njc0MTIwNzQ1MjEsImV4aXN0aW5nIjp0cnVlfQ==; _gid=GA1.3.195961545.1673814267; _hjDonePolls=864076%2C865658%2C872356%2C873600; gclubsess=46d3a3b97b4d88b68482b7f966d79ae373ea65d0; _hjHasCachedUserAttributes=true; SL_C_23361dd035530_VID=LFlRfyq_0v; SL_C_23361dd035530_KEY=a14d3638cda988422792e3613234743b983fdd9e; _gat_UA-187315934-4=1; _gat_UA-187315934-3=1; _gat_UA-64910362-1=1; _gat_UA-64910362-39=1; _ga_H7ETJY03DT=GS1.1.1674147919.225.1.1674147921.58.0.0; _ga_GDBFGFR1PC=GS1.1.1674147919.226.1.1674147921.58.0.0; _ga=GA1.3.159586927.1667412074",
-        'authority': "gamersclub.com.br",
-        'accept': "application/json, text/javascript, */*; q=0.01",
-        'accept-language': "en-US,en;q=0.9,pt;q=0.8,fr;q=0.7",
-        'referer': f"https://gamersclub.com.br/player/{id_gc}",
-        'sec-fetch-dest': "empty",
-        'sec-fetch-mode': "cors",
-        'sec-fetch-site': "same-origin",
-        'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
-        'x-requested-with': "XMLHttpRequest"
-        }
-
-    conn.request("GET", f"/api/box/history/{id_gc}?json=", payload, headers)
-
-    res = conn.getresponse()
-    data = res.read()
-
-    dict = data.decode("utf-8")
-
-    stats = json.loads(dict)
-
-    estatisticas = stats['stat']
-
-    dados = []
-    for itens_of_list in estatisticas:
-        for key_of_dict, value_of_dict in itens_of_list.items():
-            dados.append(value_of_dict)
-
-    nome = []
-    dado = []
-    for i, v in enumerate(dados):
-        if i % 2 == 0:
-            nome.append(v)
-        else:
-            dado.append(v)
-
-    for n, d in zip(nome, dado):
-        await ctx.send(f'{n} = {d}')
-
 
 #BANCO DE DADOS DE ID'S - GC
 @client.command(name='showids', help="!showids mostra o nosso cadastro de id's da GamersClub")
