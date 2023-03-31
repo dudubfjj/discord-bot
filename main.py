@@ -16,11 +16,11 @@ async def on_ready():
 
 @client.event
 async def on_command_error(ctx, error):
-    if isinstance(error, MissingRequiredArgument):
+    if isinstance(error, MissingRequiredArgument):#
         await ctx.send('Coloque o id da Gamersclub após o comando. Digite !help para ver os comandos.')
-    elif isinstance(error, CommandNotFound):
+    elif isinstance(error, CommandNotFound):#
         await ctx.send('O comando não existe. Digite !help para ver os comandos.')
-    elif isinstance(error, CommandInvokeError):
+    elif isinstance(error, CommandInvokeError):#
         await ctx.send('Não foi possível obter essa informação. Verifique se os dados foram digitados corretamente.')
     else:
         raise error
@@ -72,8 +72,7 @@ async def get_url(ctx, id_gc):
 
     response = requests.get(f'https://gamersclub.com.br/api/box/init/{id_gc}', headers=headers)
     stat = response.json()
-
-
+    
     estatisticas = stat['stats']
 
     stat = []
